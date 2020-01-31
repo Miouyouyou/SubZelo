@@ -1,0 +1,118 @@
+type MediaHost {
+	id: ID! @id
+	name: String!
+	urls: [String] @scalarList(strategy: RELATION)
+	host: [MediaHostReference]
+}
+
+type MediaHostReference {
+	id: ID! @id
+	host: MediaHost
+	reference_id: String!
+	audio: Audio
+}
+
+type Actor {
+	id: ID! @id
+	name: String!
+	type: String!
+	additional_infos: [String] @scalarList(strategy: RELATION)
+}
+
+type Media {
+	id: ID! @id
+	length: Float!
+	audio: [Audio]
+	video: [Video]
+}
+
+type Lang {
+	id: ID! @id
+	xmlcode: String
+}
+
+type Tag {
+	id: ID! @id
+	name: String
+}
+
+type Subtitler {
+	id: ID! @id
+	name: String!
+}
+
+type Audio {
+	id: ID! @id
+	length: Float!
+	subtitles: [AudioSubtitle]
+	lang: [Lang]
+	actors: [Actor]
+}
+
+type AudioSubtitle {
+	id: ID! @id
+	# Only added for maintainance purposes
+	# (Finding orphan subtitles)
+	# TODO "Audio!" really ? If some idiot delete
+	# an audio track, or a video reference, we
+	# lose ALL the subtitles attached to it ?
+	target: Audio!
+	lang: [Lang]!
+	text: String!
+	start: Float!
+	end: Float!
+	actor: Actor!
+	tags: [Tag]
+	providedby: [Subtitler]!
+}
+
+# Note : Used when referencing, to determine the original
+# aspect ratio, and adapt referenced VideoSubtitle in
+# consequence.
+type Dimensions {
+	id: ID! @id
+	width: Int!
+	height: Int!
+}
+
+type Video {
+	id: ID! @id
+	length: Float!
+	subtitles: [VideoSubtitle]
+	lang: [Lang]
+	actors: [Actor]
+	dimensions: [Dimensions]
+}
+
+type Area {
+	id: ID! @id
+	upperleft_x: Int!
+	upperleft_y: Int!
+	bottomright_x: Int!
+	bottomright_y: Int!
+}
+
+type VideoSubtitle {
+	id: ID! @id
+	target: Video!
+	lang: [Lang]!
+	text: String!
+	start: Float!
+	end: Float!
+	area: Area!
+
+	actor: [Actor]
+	tags: [Tag]
+	providedby: [Subtitler]!
+}
+
+type AudioMarkerTask {
+	id: ID! @id
+	start: Float
+	end: Float
+	lang: Lang
+	subtitles: [AudioSubtitle]!
+	actors: [Actor]!
+	media: Media!
+	audio: Audio!
+}

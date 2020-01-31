@@ -1,0 +1,20 @@
+{
+	"manifest_version": 2,
+	"name": "Borderify",
+	"version": "1.0",
+	"description": "Adds a red bowdeuw to all webpages matching youtube.com.",
+	"icons": {
+		"48": "icons/border-48.png"
+	},
+	"permissions": [
+		"storage",
+		"unlimitedStorage"
+	],
+	"content_scripts": [
+		{
+			"matches": ["*://*.youtube.com/*"],
+			"js": ["borderify.js"],
+			"run_at": "document_end"
+		}
+	]
+}
